@@ -35,6 +35,22 @@ app.get("/all-students", function(req, res) {
     })
 });
 
+// Create a route for all students formatted in html format
+app.get("/all-students-formatted", function(req, res) {
+    var sql = 'select * from Students';
+    var output = '<table border = "1px">';
+    db.query(sql).then(results => {
+        for (var row of results){
+            output += '<tr>';
+            output += '<td>' + row.id + '</td>';
+            output += '<td>' + row.name + '</td>';
+            output += '</tr>';
+        }
+        output += '</table>';
+        res.send(output);
+    })
+});
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
