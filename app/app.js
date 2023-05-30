@@ -86,17 +86,8 @@ app.get("/all-Programmes", function(req, res) {
 // Create a route for all Programmes formatted in html table
 app.get("/all-programmes-formatted", function(req, res) {
     var sql = 'select * from Programmes';
-    var output = '<table border = "1px">';
     db.query(sql).then(results => {
-        for (var row of results){
-            output += '<tr>';
-            output += '<td>' + row.id + '</td>';
-            // create a link to each student showing student ID
-            output += '<td>' + '<a href="./programme/' + row.id + '">' + row.name + '</a>' + '</td>';
-            output += '</tr>';
-        }
-        output += '</table>';
-        res.send(output);
+        res.render('all-programmes', {data:results})
     })
 });
 
@@ -111,9 +102,9 @@ app.get("/programme/:id", function (req, res) {
     db.query(pgmSql, [PgmId]).then(results => {
         var pgmCode = results[0].pgmId;
         
+        var progName = results[0].name;
         // console.log(results[0].name);
-        output = '';
-        output += '<div><b>Programme Name: </b>' + results[0].name; + '<div>'
+
         //Now call the database for the modules
         db.query(modSql, [pgmCode]).then(results => {
             output += '<hr>'
