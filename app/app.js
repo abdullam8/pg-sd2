@@ -52,7 +52,7 @@ app.get("/all-students-formatted", function(req, res) {
 // single-student page which lists a student name, their programme and their modules
 app.get("/single-student/:id", function (req, res) {
     var stId = req.params.id;
-    console.log(stId);
+    // console.log(stId);
     var stSql = "SELECT s.name as student, ps.name as programme, \
     ps.id as pcode from Students s \
     JOIN Student_Programme sp on sp.id = s.id \
@@ -64,21 +64,10 @@ app.get("/single-student/:id", function (req, res) {
     db.query(stSql, [stId]).then(results => {
         // console.log(results);
         var pCode = results[0].pcode;
-        output = '';
-        output += '<div><b>Student: </b>' + results[0].student; + '</div>';
-        output += '<div><b>Programme: </b>' + results[0].programme; + '<div>'
+        var student = results[0].student
         //Now call the database for the modules
         db.query(modSql, [pCode]).then(results => {
-            output += '<table border="1px">';
-            for (var row of results){
-                output += '<tr>';
-                output += '<td>' + row.module + '</td>';
-                output += '<td>' + row.name + '<td>';
-                output += '</tr>';
-            }
-            output += '</table>';
-            res.send(output);
-
+            res.render('single-student', {'student':student, 'Programme':results[0].programme, data:results})
         });
     });
 });
@@ -121,6 +110,7 @@ app.get("/programme/:id", function (req, res) {
     WHERE programme =?"
     db.query(pgmSql, [PgmId]).then(results => {
         var pgmCode = results[0].pgmId;
+        
         // console.log(results[0].name);
         output = '';
         output += '<div><b>Programme Name: </b>' + results[0].name; + '<div>'

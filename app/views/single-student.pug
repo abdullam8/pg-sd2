@@ -1,0 +1,12 @@
+extends layout
+block content
+    .main-content
+    h1 Single student
+    p Student Name: #{student}
+    p Programme : #{Programme}
+    table(border=1)
+        for item in data 
+            tr 
+                td #{item.module}
+                td #{item.name}
+                
