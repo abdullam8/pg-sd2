@@ -98,6 +98,24 @@ app.get("/all-Programmes", function(req, res) {
     })
 });
 
+// Create a route for all Programmes formatted in html table
+app.get("/all-programmes-formatted", function(req, res) {
+    var sql = 'select * from Programmes';
+    var output = '<table border = "1px">';
+    db.query(sql).then(results => {
+        for (var row of results){
+            output += '<tr>';
+            output += '<td>' + row.id + '</td>';
+            // create a link to each student showing student ID
+            output += '<td>' + '<a href="./single-programme/' + row.id + '">' + row.name + '</a>' + '</td>';
+            output += '</tr>';
+        }
+        output += '</table>';
+        res.send(output);
+    })
+});
+
+
 
 // Create a route for /goodbye
 // Responds to a 'GET' request
