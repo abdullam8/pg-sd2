@@ -180,6 +180,51 @@ app.get("/all-modules-formatted", function(req, res) {
     })
 });
 
+// single-module page showing a module title, its programme and all the students for that module.
+app.get("/module/:id", function (req, res) {
+    var modCode = req.params.id;
+  
+    var moduleSQL = "SELECT Modules.code AS modCode, Modules.name FROM Modules \
+                     WHERE Modules.code = ?";
+  
+    var pgmSQL = "SELECT Programmes.name FROM Programmes \
+                  JOIN Programme_Modules ON Programmes.id = Programme_Modules.programme \
+                  JOIN Modules ON Programme_Modules.module = Modules.code \
+                  WHERE Modules.code = ?";
+  
+    var stdSql = "SELECT Students.name FROM Students \
+                  JOIN Student_Programme ON Students.id = Student_Programme.id \
+                  JOIN Programme_Modules ON Programme_Modules.programme = Student_Programme.programme \
+                  JOIN Modules ON Modules.code = Programme_Modules.module \
+                  WHERE Modules.code = ?";
+  
+    db.query(moduleSQL, [modCode]).then(moduleResult => {
+        var moduleCode = moduleResult[0].modCode;
+        var output = '';
+        output += '<div><b>Module Name: </b>' + moduleResult[0].name + '</div>';
+  
+        // call program associated with the module code
+        db.query(pgmSQL, [moduleCode]).then(programmeResult => {
+            output += '<div><b>Programme Name: </b>' + programmeResult[0].name + '</div>';
+
+            // Get the students in the module
+            db.query(stdSql, [moduleCode]).then(studentResult => {
+                output += '<hr>'
+                output += '<table border="1px">';
+                output += '<tr>';
+                output += '<th>' + '<strong> Student Name</strong>' + '</th>';
+                output += '</tr>';
+                for (var row of studentResult){
+                    output += '<tr>';
+                    output += '<td>' + row.name + '<td>';
+                    output += '</tr>';
+                }
+                output += '</table>';
+                res.send(output);
+              })
+          })
+      })
+  });
 
 
 // Create a route for /goodbye
