@@ -149,6 +149,39 @@ app.get("/programme/:id", function (req, res) {
     });
 });
 
+// Create a route for all Modules
+app.get("/all-modules", function(req, res) {
+    var sql = 'select * from Modules';
+    db.query(sql).then(results => {
+        res.json(results);
+    })
+});
+
+// Create a route for all Module formatted in html table
+app.get("/all-modules-formatted", function(req, res) {
+    var sql = 'select * from Modules';
+    var output = '<table border = "1px">';
+    db.query(sql).then(results => {
+        output += '<hr>'
+        output += '<table border="1px">';
+        output += '<tr>';
+        output += '<th>' + '<strong> Module Code</strong>' + '</th>';
+        output += '<th>' + '<strong> Module Name</strong>' + '<th>';
+        output += '</tr>';
+        for (var row of results){
+            output += '<tr>';
+            output += '<td>' + row.code + '</td>';
+            // create a link to each Module showing Module code
+            output += '<td>' + '<a href="./module/' + row.code + '">' + row.name + '</a>' + '</td>';
+            output += '</tr>';
+        }
+        output += '</table>';
+        res.send(output);
+    })
+});
+
+
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
