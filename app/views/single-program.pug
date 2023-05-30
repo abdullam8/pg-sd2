@@ -1,0 +1,14 @@
+extends layout
+block content
+    .main-content
+    h1 Single program
+    p Programme Name : #{ProgrammeName}
+    table(border=1)
+        tr 
+            th Module code 
+            th Module Name
+        for item in data 
+            tr 
+                td #{item.module}
+                td #{item.name}
+    

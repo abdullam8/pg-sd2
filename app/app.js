@@ -107,20 +107,7 @@ app.get("/programme/:id", function (req, res) {
 
         //Now call the database for the modules
         db.query(modSql, [pgmCode]).then(results => {
-            output += '<hr>'
-            output += '<table border="1px">';
-            output += '<tr>';
-            output += '<th>' + '<strong> Module Code</strong>' + '</th>';
-            output += '<th>' + '<strong> Module Name</strong>' + '<th>';
-            output += '</tr>';
-            for (var row of results){
-                output += '<tr>';
-                output += '<td>' + row.module + '</td>';
-                output += '<td>' + row.name + '<td>';
-                output += '</tr>';
-            }
-            output += '</table>';
-            res.send(output);
+            res.render('single-program', {'ProgrammeName':progName, data:results})
 
         });
     });
