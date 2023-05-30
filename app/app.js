@@ -43,7 +43,8 @@ app.get("/all-students-formatted", function(req, res) {
         for (var row of results){
             output += '<tr>';
             output += '<td>' + row.id + '</td>';
-            output += '<td>' + row.name + '</td>';
+            // create a link to each student showing student ID
+            output += '<td>' + '<a href="./single-student/' + row.id + '">' + row.name + '</a>' + '</td>';
             output += '</tr>';
         }
         output += '</table>';
