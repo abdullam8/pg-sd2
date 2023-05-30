@@ -52,6 +52,41 @@ app.get("/all-students-formatted", function(req, res) {
     })
 });
 
+
+// single-student page which lists a student name, their programme and their modules
+app.get("/single-student/:id", function (req, res) {
+    var stId = req.params.id;
+    console.log(stId);
+    var stSql = "SELECT s.name as student, ps.name as programme, \
+    ps.id as pcode from Students s \
+    JOIN Student_Programme sp on sp.id = s.id \
+    JOIN Programmes ps on ps.id = sp.programme \
+    WHERE s.id = ?"
+    var modSql = "SELECT * FROM Programme_Modules pm \
+    JOIN Modules m on m.code = pm.module \
+    WHERE programme =?"
+    db.query(stSql, [stId]).then(results => {
+        // console.log(results);
+        var pCode = results[0].pcode;
+        output = '';
+        output += '<div><b>Student: </b>' + results[0].student; + '</div>';
+        output += '<div><b>Programme: </b>' + results[0].programme; + '<div>'
+        //Now call the database for the modules
+        db.query(modSql, [pCode]).then(results => {
+            output += '<table border="1px">';
+            for (var row of results){
+                output += '<tr>';
+                output += '<td>' + row.module + '</td>';
+                output += '<td>' + row.name + '<td>';
+                output += '</tr>';
+            }
+            output += '</table>';
+            res.send(output);
+
+        });
+    });
+});
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
