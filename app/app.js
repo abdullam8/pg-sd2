@@ -25,6 +25,16 @@ app.get("/db_test", function(req, res) {
     });
 });
 
+
+// Create a route for all students
+app.get("/all-students", function(req, res) {
+    var sql = 'select * from Students';
+    db.query(sql).then(results => {
+        console.log(results);
+        res.json(results);
+    })
+});
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
