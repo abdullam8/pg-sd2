@@ -87,6 +87,18 @@ app.get("/single-student/:id", function (req, res) {
     });
 });
 
+
+
+// Create a route for all Programmes
+app.get("/all-Programmes", function(req, res) {
+    var sql = 'select * from Programmes';
+    db.query(sql).then(results => {
+        console.log(results);
+        res.json(results);
+    })
+});
+
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {
