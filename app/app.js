@@ -107,7 +107,7 @@ app.get("/all-programmes-formatted", function(req, res) {
             output += '<tr>';
             output += '<td>' + row.id + '</td>';
             // create a link to each student showing student ID
-            output += '<td>' + '<a href="./single-programme/' + row.id + '">' + row.name + '</a>' + '</td>';
+            output += '<td>' + '<a href="./programme/' + row.id + '">' + row.name + '</a>' + '</td>';
             output += '</tr>';
         }
         output += '</table>';
@@ -115,7 +115,39 @@ app.get("/all-programmes-formatted", function(req, res) {
     })
 });
 
+// single-program page which lists a program name, their modules
+app.get("/programme/:id", function (req, res) {
+    var PgmId = req.params.id;
+    // console.log(PgmId);
+    var pgmSql = "SELECT Programmes.id as pgmId, Programmes.name FROM Programmes WHERE Programmes.id = ?"
 
+    var modSql = "SELECT * FROM Programme_Modules JOIN Modules on Modules.code = Programme_Modules.module \
+    WHERE programme =?"
+    db.query(pgmSql, [PgmId]).then(results => {
+        var pgmCode = results[0].pgmId;
+        // console.log(results[0].name);
+        output = '';
+        output += '<div><b>Programme Name: </b>' + results[0].name; + '<div>'
+        //Now call the database for the modules
+        db.query(modSql, [pgmCode]).then(results => {
+            output += '<hr>'
+            output += '<table border="1px">';
+            output += '<tr>';
+            output += '<th>' + '<strong> Module Code</strong>' + '</th>';
+            output += '<th>' + '<strong> Module Name</strong>' + '<th>';
+            output += '</tr>';
+            for (var row of results){
+                output += '<tr>';
+                output += '<td>' + row.module + '</td>';
+                output += '<td>' + row.name + '<td>';
+                output += '</tr>';
+            }
+            output += '</table>';
+            res.send(output);
+
+        });
+    });
+});
 
 // Create a route for /goodbye
 // Responds to a 'GET' request
